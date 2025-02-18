@@ -4,27 +4,28 @@ from pygame.math import Vector2
 from pygame.transform import rotozoom, scale_by
 from pygame.image import load
 
-from config.create_Object import screen
+from classes.class_SpriteGroups import SpriteGroups
 
 from icecream import ic
 
-class Shots(Sprite):
-    def __init__(self,
-                pos=None,
-                group=None,
-                size=(20, 3),
-                color='white',
-                angle=0,
-                speed=0,
-                shoter=None,
-                kill_shot_distance=None,
-                image=None,
-                scale_value=None,
-                damage=None
-                ):
-        super().__init__(group)
 
-        self.group = group
+class Shots(Sprite):
+    def __init__(
+        self,
+        pos=None,
+        size=(20, 3),
+        color="white",
+        angle=0,
+        speed=0,
+        shoter=None,
+        kill_shot_distance=None,
+        image=None,
+        scale_value=None,
+        damage=None,
+    ):
+        self.sprite_groups = SpriteGroups()
+        super().__init__(self.sprite_groups.camera_group)
+
         self.angle = angle
         if image:
             self.image = scale_by(load(image), scale_value)
@@ -42,18 +43,17 @@ class Shots(Sprite):
         self.offset = Vector2().rotate(self.angle)
         self.pos = Vector2(pos) + self.offset
         self.direction = Vector2(1, 0).rotate(-self.angle)
-        self.group.add(self)
-
 
     def check_position(self):
-        if Vector2(self.rect.center).distance_to(self.old_shot_coordinate) > self.kill_shot_distance:
+        if (
+            Vector2(self.rect.center).distance_to(self.old_shot_coordinate)
+            > self.kill_shot_distance
+        ):
             self.kill()
-
 
     def move(self):
         self.pos += self.direction * self.speed
         self.rect.center = self.pos
-
 
     def update(self):
         self.check_position()

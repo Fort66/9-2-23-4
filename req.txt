@@ -4,6 +4,7 @@ executing==2.2.0
 gif_pygame==1.1.2
 icecream==2.1.4
 loguru==0.7.3
+numpy==2.2.3
 pillow==11.1.0
 pygame==2.6.1
 pygame-ce==2.5.2
