@@ -16,7 +16,7 @@ from units.class_Shots import Shots
 from config.sources.enemies.source import ENEMIES
 from classes.class_SpriteGroups import SpriteGroups
 from units.class_Guardian import Guardian
-
+from functions.function_enemies_collision import guard_collision
 
 class Enemy(Sprite):
     def __init__(self, group=None, player=None):
@@ -53,7 +53,7 @@ class Enemy(Sprite):
 
         self.rect = self.image_rotation.get_rect(center=self.pos)
         self.direction = Vector2(self.pos)
-        
+
         self.shield = Guardian(
             dir_path="images/guards/guard2",
             speed_frame=0.09,
@@ -63,7 +63,7 @@ class Enemy(Sprite):
             guard_level=randint(3, 10),
             pos=self.rect.center,
         )
-        
+
         self.prepare_weapon(0)
 
     def random_value(self):
@@ -141,21 +141,25 @@ class Enemy(Sprite):
         self.moveY = choice(self.direction_list)
 
     def shot(self):
-        for value in self.pos_weapon_rotation:
-            if self.shots and randint(0, 100) == 50:
-                self.sprite_groups.camera_group.add(
-                    shot := Shots(
-                        pos=(value),
-                        speed=10,
-                        angle=self.angle,
-                        shoter=self,
-                        kill_shot_distance=2000,
-                        color="",
-                        image="images/rockets/shot1.png",
-                        scale_value=0.07,
+        if (
+            Vector2(self.rect.center).distance_to(self.player.rect.center)
+            <= self.shot_distance
+        ):
+            for value in self.pos_weapon_rotation:
+                if self.shots and randint(0, 100) == 50:
+                    self.sprite_groups.camera_group.add(
+                        shot := Shots(
+                            pos=(value),
+                            speed=10,
+                            angle=self.angle,
+                            shoter=self,
+                            kill_shot_distance=2000,
+                            color="",
+                            image="images/rockets/shot1.png",
+                            scale_value=0.07,
+                        )
                     )
-                )
-                self.sprite_groups.enemies_shot_group.add(shot)
+                    self.sprite_groups.enemies_shot_group.add(shot)
 
     def check_move_count(self):
         if self.move_count <= 0:
@@ -174,9 +178,10 @@ class Enemy(Sprite):
         self.move()
         self.validate_first_shot()
         self.shot()
-        
-        if hasattr(self, 'shield'):
+
+        if hasattr(self, "shield"):
             self.shield.animate(self.rect)
+            guard_collision(self)
 
         for value in self.pos_weapon_rotation:
             value[0] += self.direction.x

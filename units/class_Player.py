@@ -12,6 +12,7 @@ from config.sources.heroes.source import HEROES
 
 from classes.class_SpriteGroups import SpriteGroups
 from units.class_Guardian import Guardian
+from functions.function_player_collision import guard_collision
 
 
 from icecream import ic
@@ -135,13 +136,13 @@ class Player(Sprite):
         self.check_position()
         self.move()
 
-        if hasattr(self, 'shield'):
-            if self.shield.guard_level > 0:
-                self.shield.animate(self.rect)
-                self.shield.update()
-            else:
-                delattr(self, 'shield')
 
+        if hasattr(self, "shield"):
+            self.shield.animate(self.rect)
+            guard_collision(self)
+
+        if hasattr(self, 'expl_enemies_rocket'):
+            self.expl_enemies_rocket.animate(self.rect)
 
         for value in self.pos_weapon_rotation:
             value[0] += self.direction.x

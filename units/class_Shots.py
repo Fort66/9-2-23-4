@@ -5,6 +5,7 @@ from pygame.transform import rotozoom, scale_by
 from pygame.image import load
 
 from classes.class_SpriteGroups import SpriteGroups
+from functions.function_shots_collision import shots_collision
 
 from icecream import ic
 
@@ -58,3 +59,4 @@ class Shots(Sprite):
     def update(self):
         self.check_position()
         self.move()
+        # shots_collision(self)

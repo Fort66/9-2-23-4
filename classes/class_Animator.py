@@ -6,10 +6,8 @@ from pygame.sprite import Sprite
 from os import listdir
 from time import time
 
-from classes.class_SpriteGroups import SpriteGroups
 
-
-class Animator(Sprite):
+class Animator:
     def __init__(
         self,
         dir_path=None,
@@ -19,9 +17,6 @@ class Animator(Sprite):
         loops=-1,
         pos=(0, 0),
     ):
-        self.sprite_groups = SpriteGroups()
-        super().__init__()
-        # self.sprite_groups.camera_group.add(self)
 
         self.dir_path = dir_path
         self.speed_frame = speed_frame
