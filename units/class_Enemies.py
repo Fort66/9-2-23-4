@@ -15,6 +15,7 @@ from units.class_Shots import Shots
 
 from config.sources.enemies.source import ENEMIES
 from classes.class_SpriteGroups import SpriteGroups
+from units.class_Guardian import Guardian
 
 
 class Enemy(Sprite):
@@ -52,6 +53,17 @@ class Enemy(Sprite):
 
         self.rect = self.image_rotation.get_rect(center=self.pos)
         self.direction = Vector2(self.pos)
+        
+        self.shield = Guardian(
+            dir_path="images/guards/guard2",
+            speed_frame=0.09,
+            obj_rect=self.rect,
+            scale_value=(1, 1),
+            loops=-1,
+            guard_level=randint(3, 10),
+            pos=self.rect.center,
+        )
+        
         self.prepare_weapon(0)
 
     def random_value(self):
@@ -162,6 +174,9 @@ class Enemy(Sprite):
         self.move()
         self.validate_first_shot()
         self.shot()
+        
+        if hasattr(self, 'shield'):
+            self.shield.animate(self.rect)
 
         for value in self.pos_weapon_rotation:
             value[0] += self.direction.x

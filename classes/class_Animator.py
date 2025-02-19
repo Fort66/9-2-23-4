@@ -1,24 +1,30 @@
 import numpy as np
 from pygame.image import load
 from pygame.transform import scale, scale_by
+from pygame.sprite import Sprite
 
 from os import listdir
 from time import time
 
+from classes.class_SpriteGroups import SpriteGroups
 
-class Animator:
+
+class Animator(Sprite):
     def __init__(
         self,
         dir_path=None,
-        speef_frame=0.05,
+        speed_frame=0.05,
         obj_rect=None,
         scale_value=(1, 1),
         loops=-1,
         pos=(0, 0),
     ):
+        self.sprite_groups = SpriteGroups()
+        super().__init__()
+        # self.sprite_groups.camera_group.add(self)
 
         self.dir_path = dir_path
-        self.speef_frame = speef_frame
+        self.speed_frame = speed_frame
         self.obj_rect = obj_rect
         self.scale_value = scale_value
         if self.obj_rect:
@@ -44,7 +50,7 @@ class Animator:
                         scale(
                             load(f"{self.dir_path}/{value}").convert_alpha(), self.size
                         ),
-                        self.speef_frame,
+                        self.speed_frame,
                     ]
                     for value in self.file_list
                 ]
@@ -57,7 +63,7 @@ class Animator:
                             load(f"{self.dir_path}/{value}").convert_alpha(),
                             self.scale_value,
                         ),
-                        self.speef_frame,
+                        self.speed_frame,
                     ]
                     for value in self.file_list
                 ]
@@ -66,7 +72,7 @@ class Animator:
         self.frames = self.original_frames.copy()
         self.rect = self.original_frames[0][0].get_rect(center=self.pos)
 
-    def aninmate(self, obj_rect=None):
+    def animate(self, obj_rect=None):
         self.obj_rect = obj_rect
         if self.obj_rect:
             self.size = (

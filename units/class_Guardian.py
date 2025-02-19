@@ -1,4 +1,6 @@
 from classes.class_Animator import Animator
+from classes.class_SpriteGroups import SpriteGroups
+from functions.function_guard_collision import guard_collision
 
 
 class Guardian(Animator):
@@ -21,11 +23,15 @@ class Guardian(Animator):
             pos=pos,
         )
 
+        self.sprite_groups = SpriteGroups()
+        self.sprite_groups.player_guard_group.add(self)
+
         self.guard_level = guard_level
 
     @property
     def decrease_guard_level(self):
         if self.guard_level > 0:
             self.guard_level -= 1
-        else:
-            del self
+
+    def update(self):
+        guard_collision(self)

@@ -6,7 +6,6 @@ from pygame.math import Vector2
 from pygame.key import get_pressed
 
 from units.class_Shots import Shots
-from logic.class_FirstShot import FirstShot
 import math
 
 from config.sources.heroes.source import HEROES
@@ -40,11 +39,17 @@ class Player(Sprite):
         self.image = HEROES[1]["angle"][0]["sprite"]
         self.image_rotation = self.image.copy()
         self.rect = self.image_rotation.get_rect(center=self.pos)
-        
+
         self.shield = Guardian(
-            
+            dir_path="images/guards/guard1",
+            speed_frame=0.09,
+            obj_rect=self.rect,
+            scale_value=(1, 1),
+            loops=-1,
+            guard_level=10,
+            pos=self.rect.center,
         )
-        
+
         self.prepare_weapon(0)
 
     def handle_event(self, event):
@@ -129,6 +134,14 @@ class Player(Sprite):
     def update(self):
         self.check_position()
         self.move()
+
+        if hasattr(self, 'shield'):
+            if self.shield.guard_level > 0:
+                self.shield.animate(self.rect)
+                self.shield.update()
+            else:
+                delattr(self, 'shield')
+
 
         for value in self.pos_weapon_rotation:
             value[0] += self.direction.x
