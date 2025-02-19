@@ -12,6 +12,7 @@ import math
 from config.sources.heroes.source import HEROES
 
 from classes.class_SpriteGroups import SpriteGroups
+from units.class_Guardian import Guardian
 
 
 from icecream import ic
@@ -32,13 +33,18 @@ class Player(Sprite):
         self.angle = 0
         self.rotation_speed = HEROES[1]["rotation_speed"]
         self.speed = HEROES[1]["speed"]
-        self.first_shot = FirstShot()
+        self.first_shot = False
         self.__post_init__()
 
     def __post_init__(self):
         self.image = HEROES[1]["angle"][0]["sprite"]
         self.image_rotation = self.image.copy()
         self.rect = self.image_rotation.get_rect(center=self.pos)
+        
+        self.shield = Guardian(
+            
+        )
+        
         self.prepare_weapon(0)
 
     def handle_event(self, event):
