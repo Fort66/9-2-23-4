@@ -25,7 +25,7 @@ class MiniMap:
         self.ratioY = (
             self.map_size[1] / self.sprite_groups.camera_group.background_rect[3]
         )
-        self.map_rect = self.map_surface.get_rect(bottomright=screen.rect.bottomright)
+        self.map_rect = self.map_surface.get_rect(topleft=screen.rect.topleft)
 
     def draw_player(self):
         for player in self.sprite_groups.player_group:
@@ -89,8 +89,5 @@ class MiniMap:
         self.draw_enemies_shot()
         screen.window.blit(
             self.map_surface,
-            (
-                screen.rect[2] - self.map_size[0],
-                screen.rect[3] - self.map_size[1],
-            ),
+            self.map_rect
         )

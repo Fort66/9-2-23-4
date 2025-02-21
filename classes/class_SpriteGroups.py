@@ -9,7 +9,7 @@ class SpriteGroups:
         'player_shot_group': Group(),
         'enemies_shot_group': Group(),
         'player_guard_group': GroupSingle(),
-        'enemies_guard_grop': Group(),
+        'enemies_guard_group': Group(),
         'ally_group': Group(),
         'ally_shot_group': Group(),
         'ally_guar_group': Group(),

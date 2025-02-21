@@ -8,9 +8,9 @@ def guard_collision(obj):
     sprite_groups = SpriteGroups()
     object_collide = spritecollide(obj, sprite_groups.player_shot_group, dokill=False)
 
-    if object_collide:
-        if hasattr(obj, "shield"):
-            if obj.shield.guard_level > 0:
-                obj.shield.decrease_guard_level
-            else:
-                delattr(obj, "shield")
+    # if object_collide:
+    #     if hasattr(obj, "shield"):
+    #         if obj.shield.guard_level > 0:
+    #             obj.shield.decrease_guard_level
+    #         else:
+    #             delattr(obj, "shield")

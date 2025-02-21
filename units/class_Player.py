@@ -41,7 +41,7 @@ class Player(Sprite):
         self.image_rotation = self.image.copy()
         self.rect = self.image_rotation.get_rect(center=self.pos)
 
-        self.shield = Guardian(
+        self.sprite_groups.camera_group.add(shield := Guardian(
             dir_path="images/guards/guard1",
             speed_frame=0.09,
             obj_rect=self.rect,
@@ -49,7 +49,9 @@ class Player(Sprite):
             loops=-1,
             guard_level=10,
             pos=self.rect.center,
-        )
+            obj=self
+        ))
+        self.sprite_groups.player_guard_group.add(shield)
 
         self.prepare_weapon(0)
 
@@ -136,13 +138,6 @@ class Player(Sprite):
         self.check_position()
         self.move()
 
-
-        if hasattr(self, "shield"):
-            self.shield.animate(self.rect)
-            guard_collision(self)
-
-        if hasattr(self, 'expl_enemies_rocket'):
-            self.expl_enemies_rocket.animate(self.rect)
 
         for value in self.pos_weapon_rotation:
             value[0] += self.direction.x
