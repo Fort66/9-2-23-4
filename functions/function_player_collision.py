@@ -5,9 +5,14 @@ from units.class_Explosion import Explosion
 from icecream import ic
 
 
-def guard_collision(obj):
+def player_collision():
     sprite_groups = SpriteGroups()
-    object_collide = spritecollide(obj, sprite_groups.enemies_shot_group, dokill=True)
+    object_collide = groupcollide(
+        sprite_groups.player_group,
+        sprite_groups.enemies_shot_group,
+        dokilla=False,
+        dokillb=True
+        )
 
     # if object_collide:
     #     if hasattr(obj, "shield"):
@@ -25,4 +30,4 @@ def guard_collision(obj):
         #     pos=obj.rect.center
         # )
 
-        
+

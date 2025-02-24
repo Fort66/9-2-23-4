@@ -12,7 +12,7 @@ from config.sources.heroes.source import HEROES
 
 from classes.class_SpriteGroups import SpriteGroups
 from units.class_Guardian import Guardian
-from functions.function_player_collision import guard_collision
+from functions.function_player_collision import player_collision
 
 
 from icecream import ic
@@ -44,12 +44,12 @@ class Player(Sprite):
         self.sprite_groups.camera_group.add(shield := Guardian(
             dir_path="images/guards/guard1",
             speed_frame=0.09,
-            obj_rect=self.rect,
             scale_value=(1, 1),
             loops=-1,
             guard_level=10,
-            pos=self.rect.center,
-            obj=self
+            obj=self,
+            size=self.rect.size,
+            angle=self.angle
         ))
         self.sprite_groups.player_guard_group.add(shield)
 
@@ -137,6 +137,9 @@ class Player(Sprite):
     def update(self):
         self.check_position()
         self.move()
+
+        if len(self.sprite_groups.player_guard_group) == 0:
+            player_collision()
 
 
         for value in self.pos_weapon_rotation:

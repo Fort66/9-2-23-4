@@ -4,9 +4,14 @@ from classes.class_SpriteGroups import SpriteGroups
 from icecream import ic
 
 
-def guard_collision(obj):
+def enemies_collision():
     sprite_groups = SpriteGroups()
-    object_collide = spritecollide(obj, sprite_groups.player_shot_group, dokill=False)
+    object_collide = groupcollide(
+        sprite_groups.enemies_group,
+        sprite_groups.player_shot_group,
+        dokilla=False,
+        dokillb=True
+        )
 
     # if object_collide:
     #     if hasattr(obj, "shield"):

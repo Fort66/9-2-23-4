@@ -16,7 +16,7 @@ from units.class_Shots import Shots
 from config.sources.enemies.source import ENEMIES
 from classes.class_SpriteGroups import SpriteGroups
 from units.class_Guardian import Guardian
-from functions.function_enemies_collision import guard_collision
+from functions.function_enemies_collision import enemies_collision
 
 class Enemy(Sprite):
     def __init__(self, group=None, player=None):
@@ -57,12 +57,12 @@ class Enemy(Sprite):
         self.sprite_groups.camera_group.add(shield := Guardian(
             dir_path="images/guards/guard2",
             speed_frame=0.09,
-            obj_rect=self.rect,
             scale_value=(1, 1),
             loops=-1,
             guard_level=randint(3, 10),
-            pos=self.rect.center,
-            obj=self
+            obj=self,
+            size=self.rect.size,
+            angle=self.angle
         ))
         self.sprite_groups.enemies_guard_group.add(shield)
 
@@ -148,7 +148,7 @@ class Enemy(Sprite):
             <= self.shot_distance
         ):
             for value in self.pos_weapon_rotation:
-                if self.shots and randint(0, 100) == 50:
+                if self.player.first_shot and randint(0, 100) == 50:
                     self.sprite_groups.camera_group.add(
                         shot := Shots(
                             pos=(value),
@@ -169,18 +169,16 @@ class Enemy(Sprite):
         else:
             self.move_count -= 1
 
-    def validate_first_shot(self):
-        if self.player.first_shot:
-            self.shots = True
-
     def update(self):
         self.check_position()
         self.rotation()
         self.check_move_count()
         # self.move()
-        self.validate_first_shot()
         self.shot()
 
+        ic(self.sprite_groups.enemies_guard_group)
+        if len(self.sprite_groups.enemies_guard_group) == 0:
+            enemies_collision()
 
         for value in self.pos_weapon_rotation:
             value[0] += self.direction.x
