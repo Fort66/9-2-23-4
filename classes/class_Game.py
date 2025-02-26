@@ -26,7 +26,7 @@ class Game:
         self.player = Player(pos=self.screen.rect.center)
         # self.camera_group.add(self.player)
 
-        for _ in range(10):
+        for _ in range(6):
             self.sprite_groups.camera_group.add(Enemy(player=self.player))
 
     def run_game(self):
@@ -38,5 +38,6 @@ class Game:
             self.sprite_groups.camera_group.update()
             self.sprite_groups.camera_group.custom_draw(self.player)
 
+            self.screen.update_caption(f'{str(round(self.clock.get_fps(), 2))}')
             pg.display.update()
             self.clock.tick(self.fps)

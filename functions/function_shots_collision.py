@@ -1,22 +1,19 @@
-from pygame.sprite import groupcollide, spritecollide
+from pygame.sprite import groupcollide, spritecollideany
 from classes.class_SpriteGroups import SpriteGroups
+from units.class_Explosion import Explosion
 
 from icecream import ic
 
+sprite_groups = SpriteGroups()
 
-def shots_collision():
-    sprite_groups = SpriteGroups()
-    # object_collide = groupcollide(sprite_groups.enemies_shot_group, sprite_groups.player_group, dokilla=False, dokillb=False)
-
-    # if object_collide:
-    #     ic('object_collide')
-        
-        
-        
-        # if hasattr(obj, "shield"):
-        #     if obj.shield.guard_level > 0:
-        #         obj.shield.decrease_guard_level
-        #         return True
-        #     else:
-        #         delattr(obj, "shield")
-        #         return False
+def player_guard_collision(self):
+    if spritecollideany(self, sprite_groups.player_guard_group) and self.owner not in sprite_groups.player_group:
+        explosion = Explosion(
+            dir_path='images/explosion/rocket1_expl',
+            speed_frame=.01,
+            scale_value=(.5, .5),
+            loops=1,
+            obj=self,
+            angle=self.angle,
+            )
+        self.kill()

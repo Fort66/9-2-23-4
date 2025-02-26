@@ -5,7 +5,7 @@ from pygame.transform import rotozoom, scale_by
 from pygame.image import load
 
 from classes.class_SpriteGroups import SpriteGroups
-from functions.function_shots_collision import shots_collision
+from functions.function_shots_collision import player_guard_collision
 
 from icecream import ic
 
@@ -23,6 +23,7 @@ class Shots(Sprite):
         image=None,
         scale_value=None,
         damage=None,
+        owner=None
     ):
         self.sprite_groups = SpriteGroups()
         super().__init__(self.sprite_groups.camera_group)
@@ -35,6 +36,7 @@ class Shots(Sprite):
             self.image.fill(color)
 
         self.speed = speed
+        self.owner = owner
         self.shoter = shoter
         self.kill_shot_distance = kill_shot_distance
         self.damage = damage
@@ -59,4 +61,4 @@ class Shots(Sprite):
     def update(self):
         self.check_position()
         self.move()
-        # shots_collision(self)
+        player_guard_collision(self)

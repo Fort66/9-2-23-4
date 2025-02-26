@@ -15,6 +15,7 @@ from units.class_Shots import Shots
 
 from config.sources.enemies.source import ENEMIES
 from classes.class_SpriteGroups import SpriteGroups
+from config.create_Object import checks, weapons
 from units.class_Guardian import Guardian
 from functions.function_enemies_collision import enemies_collision
 
@@ -62,7 +63,8 @@ class Enemy(Sprite):
             guard_level=randint(3, 10),
             obj=self,
             size=self.rect.size,
-            angle=self.angle
+            angle=self.angle,
+            owner=self
         ))
         self.sprite_groups.enemies_guard_group.add(shield)
 
@@ -74,21 +76,10 @@ class Enemy(Sprite):
         self.move_count = randint(0, 600)
 
     def prepare_weapon(self, angle):
-        self.pos_weapons = []
-        for value in ENEMIES[1]["angle"][angle]["weapons"]:
-            self.pos_weapons.append(value)
+        weapons.load_weapons(obj=self, source=ENEMIES[1]["angle"][angle]["weapons"], angle=angle)
 
-    @property
     def pos_weapon_rotation(self):
-        result = []
-        for weapon in self.pos_weapons:
-            newX, newY = self.vector_rotation(weapon, -self.angle / 180 * math.pi)
-            result.append([self.rect.centerx + newX, self.rect.centery + newY])
-        return result
-
-    def vector_rotation(self, vector, angle):
-        vector = Vector2(vector)
-        return vector.rotate_rad(angle)
+        return weapons.pos_rotation(obj=self, angle=self.angle)
 
     def rotation(self):
         rotateX = self.player.rect.centerx - self.rect.centerx
@@ -110,18 +101,10 @@ class Enemy(Sprite):
         self.rect = self.image_rotation.get_rect(center=self.rect.center)
 
     def check_position(self):
-        if self.rect.left <= self.sprite_groups.camera_group.background_rect.left:
-            self.rect.left = self.sprite_groups.camera_group.background_rect.left
+        checks.position(self, self.sprite_groups.camera_group.background_rect)
+        if not checks.resolved_move:
             self.change_direction()
-        if self.rect.right >= self.sprite_groups.camera_group.background_rect.right:
-            self.rect.right = self.sprite_groups.camera_group.background_rect.right
-            self.change_direction()
-        if self.rect.top <= self.sprite_groups.camera_group.background_rect.top:
-            self.rect.top = self.sprite_groups.camera_group.background_rect.top
-            self.change_direction()
-        if self.rect.bottom >= self.sprite_groups.camera_group.background_rect.bottom:
-            self.rect.bottom = self.sprite_groups.camera_group.background_rect.bottom
-            self.change_direction()
+            checks.resolved_move = True
 
         if not self.is_min_distance:
             if (
@@ -147,11 +130,12 @@ class Enemy(Sprite):
             Vector2(self.rect.center).distance_to(self.player.rect.center)
             <= self.shot_distance
         ):
-            for value in self.pos_weapon_rotation:
-                if self.player.first_shot and randint(0, 100) == 50:
+            value = self.pos_weapon_rotation()
+            if self.player.first_shot and randint(0, 100) == 50:
+                for pos in value:
                     self.sprite_groups.camera_group.add(
                         shot := Shots(
-                            pos=(value),
+                            pos=(pos),
                             speed=10,
                             angle=self.angle,
                             shoter=self,
@@ -159,6 +143,7 @@ class Enemy(Sprite):
                             color="",
                             image="images/rockets/shot1.png",
                             scale_value=0.07,
+                            owner=self
                         )
                     )
                     self.sprite_groups.enemies_shot_group.add(shot)
@@ -179,6 +164,4 @@ class Enemy(Sprite):
         if len(self.sprite_groups.enemies_guard_group) == 0:
             enemies_collision()
 
-        for value in self.pos_weapon_rotation:
-            value[0] += self.direction.x
-            value[1] += self.direction.y
+        weapons.update_weapons(obj=self, angle=self.angle)

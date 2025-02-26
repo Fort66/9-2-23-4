@@ -31,5 +31,8 @@ class ScreenGame:
 
         set_caption(self.caption)
         self.rect = self.window.get_rect()
+        
+    def update_caption(self, caption):
+        self.caption = set_caption(caption)
 
 

@@ -21,7 +21,8 @@ class Guardian(Animator, Sprite):
         scale_value=None,
         loops=None,
         size=None,
-        angle=None
+        angle=None,
+        owner=None
     ):
         super().__init__(
             dir_path=dir_path,
@@ -35,6 +36,8 @@ class Guardian(Animator, Sprite):
         self.angle = angle
         self.obj = obj
         self.destruction_time = 0
+        self.rect = self.image_rotation.get_rect(center=self.obj.rect.center)
+        self.owner = owner
 
     def decrease_level(self, value):
         if self.guard_level > 0:

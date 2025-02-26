@@ -11,6 +11,7 @@ import math
 from config.sources.heroes.source import HEROES
 
 from classes.class_SpriteGroups import SpriteGroups
+from config.create_Object import checks, weapons
 from units.class_Guardian import Guardian
 from functions.function_player_collision import player_collision
 
@@ -49,7 +50,8 @@ class Player(Sprite):
             guard_level=10,
             obj=self,
             size=self.rect.size,
-            angle=self.angle
+            angle=self.angle,
+            owner=self
         ))
         self.sprite_groups.player_guard_group.add(shield)
 
@@ -71,36 +73,27 @@ class Player(Sprite):
                 self.shot()
 
     def shot(self):
-        for value in self.pos_weapon_rotation:
+        value = self.pos_weapon_rotation()
+        for pos in value:
             self.sprite_groups.camera_group.add(
                 shot := Shots(
-                    pos=(value),
+                    pos=(pos),
                     speed=10,
                     angle=self.angle,
                     shoter=self,
                     kill_shot_distance=2000,
                     image="images/rockets/shot3.png",
                     scale_value=0.15,
+                    owner=self
                 )
             )
             self.sprite_groups.player_shot_group.add(shot)
 
     def prepare_weapon(self, angle):
-        self.pos_weapons = []
-        for value in HEROES[1]["angle"][angle]["weapons"]:
-            self.pos_weapons.append(value)
+        weapons.load_weapons(obj=self, source=HEROES[1]["angle"][angle]["weapons"], angle=angle)
 
-    @property
     def pos_weapon_rotation(self):
-        result = []
-        for weapon in self.pos_weapons:
-            newX, newY = self.vector_rotation(weapon, -self.angle / 180 * math.pi)
-            result.append([self.rect.centerx + newX, self.rect.centery + newY])
-        return result
-
-    def vector_rotation(self, vector, angle):
-        vector = Vector2(vector)
-        return vector.rotate_rad(angle)
+        return weapons.pos_rotation(obj=self, angle=self.angle)
 
     def rotation(self):
         for value in HEROES[1]["angle"]:
@@ -114,14 +107,7 @@ class Player(Sprite):
         self.rect = self.image_rotation.get_rect(center=self.rect.center)
 
     def check_position(self):
-        if self.rect.left <= self.sprite_groups.camera_group.background_rect.left:
-            self.rect.left = self.sprite_groups.camera_group.background_rect.left
-        if self.rect.right >= self.sprite_groups.camera_group.background_rect.right:
-            self.rect.right = self.sprite_groups.camera_group.background_rect.right
-        if self.rect.top <= self.sprite_groups.camera_group.background_rect.top:
-            self.rect.top = self.sprite_groups.camera_group.background_rect.top
-        if self.rect.bottom >= self.sprite_groups.camera_group.background_rect.bottom:
-            self.rect.bottom = self.sprite_groups.camera_groupbackground_rect.bottom
+        checks.position(self, self.sprite_groups.camera_group.background_rect)
 
     def move(self):
         keys = get_pressed()
@@ -141,7 +127,5 @@ class Player(Sprite):
         if len(self.sprite_groups.player_guard_group) == 0:
             player_collision()
 
+        weapons.update_weapons(self, self.angle)
 
-        for value in self.pos_weapon_rotation:
-            value[0] += self.direction.x
-            value[1] += self.direction.y
