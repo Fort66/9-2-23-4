@@ -14,20 +14,22 @@ def player_collision():
         dokillb=True
         )
 
-    # if object_collide:
-    #     if hasattr(obj, "shield"):
-    #         if obj.shield.guard_level > 0:
-    #             obj.shield.decrease_guard_level
-    #         else:
-    #             delattr(obj, "shield")
+    if object_collide:
+        lot_hits = len(list(object_collide.values())[0])
+        hits = list(object_collide.keys())[0]
 
-        # obj.expl_enemies_rocket = Explosion(
-        #     dir_path='images/explosion/rocket1_expl',
-        #     speed_frame=.05,
-        #     obj_rect=None,
-        #     scale_value=1,
-        #     loops=1,
-        #     pos=obj.rect.center
-        # )
+        if hits.hp > 0:
+            hits.decrease_hp(lot_hits)
 
+        if hits.hp <= 0:
+            explosion = Explosion(
+            dir_path="images/explosion/ship1_expl",
+            speed_frame=0.12,
+            scale_value=(0.75, 0.75),
+            loops=1,
+            obj=hits,
+            angle=hits.angle,
+        )
+            if not explosion:
+                hits.kill()
 

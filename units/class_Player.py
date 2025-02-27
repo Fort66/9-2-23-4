@@ -7,6 +7,7 @@ from pygame.key import get_pressed
 
 from units.class_Shots import Shots
 import math
+from time import time
 
 from config.sources.heroes.source import HEROES
 
@@ -35,6 +36,9 @@ class Player(Sprite):
         self.rotation_speed = HEROES[1]["rotation_speed"]
         self.speed = HEROES[1]["speed"]
         self.first_shot = False
+        self.permisson_shoot = .25
+        self.shot_time = 1
+        self.hp = 5
         self.__post_init__()
 
     def __post_init__(self):
@@ -73,21 +77,25 @@ class Player(Sprite):
                 self.shot()
 
     def shot(self):
-        value = self.pos_weapon_rotation()
-        for pos in value:
-            self.sprite_groups.camera_group.add(
-                shot := Shots(
-                    pos=(pos),
-                    speed=10,
-                    angle=self.angle,
-                    shoter=self,
-                    kill_shot_distance=2000,
-                    image="images/rockets/shot3.png",
-                    scale_value=0.15,
-                    owner=self
+        if self.shot_time == 0:
+            self.shot_time = time()
+        if time() - self.shot_time >= self.permisson_shoot:
+            value = self.pos_weapon_rotation()
+            for pos in value:
+                self.sprite_groups.camera_group.add(
+                    shot := Shots(
+                        pos=(pos),
+                        speed=8,
+                        angle=self.angle,
+                        shoter=self,
+                        kill_shot_distance=2000,
+                        image="images/rockets/shot3.png",
+                        scale_value=0.15,
+                        owner=self
+                    )
                 )
-            )
-            self.sprite_groups.player_shot_group.add(shot)
+                self.sprite_groups.player_shot_group.add(shot)
+                self.shot_time = time()
 
     def prepare_weapon(self, angle):
         weapons.load_weapons(obj=self, source=HEROES[1]["angle"][angle]["weapons"], angle=angle)
@@ -119,6 +127,12 @@ class Player(Sprite):
             self.rect.move_ip(0, -self.speed)
         if keys[K_s]:
             self.rect.move_ip(0, self.speed)
+
+    def decrease_hp(self, value):
+        if self.hp > 0:
+            self.hp -= value
+        if self.hp <= 0:
+            self.kill()
 
     def update(self):
         self.check_position()
