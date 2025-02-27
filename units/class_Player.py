@@ -124,8 +124,7 @@ class Player(Sprite):
         self.check_position()
         self.move()
 
-        if len(self.sprite_groups.player_guard_group) == 0:
-            player_collision()
+        player_collision()
 
         weapons.update_weapons(self, self.angle)
 

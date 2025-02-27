@@ -5,7 +5,11 @@ from pygame.transform import rotozoom, scale_by
 from pygame.image import load
 
 from classes.class_SpriteGroups import SpriteGroups
-from functions.function_shots_collision import player_guard_collision
+from functions.function_shots_collision import (
+    player_guard_collision,
+    enemies_guard_collision,
+    shots_collision
+    )
 
 from icecream import ic
 
@@ -62,3 +66,5 @@ class Shots(Sprite):
         self.check_position()
         self.move()
         player_guard_collision(self)
+        enemies_guard_collision(self)
+        shots_collision()

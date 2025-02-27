@@ -161,7 +161,6 @@ class Enemy(Sprite):
         # self.move()
         self.shot()
 
-        if len(self.sprite_groups.enemies_guard_group) == 0:
-            enemies_collision()
+        enemies_collision()
 
         weapons.update_weapons(obj=self, angle=self.angle)

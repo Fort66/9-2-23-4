@@ -67,7 +67,7 @@ class Animator:
 
 
             if self.loops > 0:
-                self.frame = self.frame + 1 if self.frame < len(self.frames) - 1 else self.frames[-1]
+                self.frame = self.frame + 1 if self.frame < len(self.frames) - 1 else self.frames[-1] #TODO
 
                 if self.frame == len(self.frames) - 1:
                     self.loops -= 1
