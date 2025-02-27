@@ -4,10 +4,11 @@ from pygame.image import load
 from pygame.display import get_surface
 from pygame.math import Vector2
 
+from config.sources.backgrounds.source import GALAXY_SECTORS
+
 from icecream import ic
 
-back = "images/backgrounds/back6.jpg"
-
+#TODO формирование фонов по уровню
 
 class CameraGroup(Group):
     def __init__(self, game=None):
